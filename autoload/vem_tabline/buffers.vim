@@ -254,12 +254,21 @@ function! vem_tabline#buffers#section.set_tagnrs() abort
     let self.tagnr_map = {}
     let buffer_range = range(self.start_index, self.end_index)
     let index = 0
-    for buffer_index in buffer_range
-        let buffer_item = self.buffer_items[buffer_index]
-        let index += 1
-        call buffer_item.set_tagnr(index)
-        let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
-    endfor
+		if g:vem_tabline_show_number != 'allindex'
+			for buffer_index in buffer_range
+					let buffer_item = self.buffer_items[buffer_index]
+					let index += 1
+					call buffer_item.set_tagnr(index)
+					let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
+			endfor
+		else
+			for buffer_item in self.buffer_items
+					let index += 1
+					call buffer_item.set_tagnr(index)
+					let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
+
+			endfor
+		endif 
 
     " set tagnr for partial name
     if self.end_index < len(self.buffer_items) - 1
@@ -286,6 +295,7 @@ function! vem_tabline#buffers#section.get_tabline() abort
 
     " buffers
     let buffer_range = range(self.start_index, self.end_index)
+		" echo buffer_range
     for buffer_index in buffer_range
         let buffer_item = self.buffer_items[buffer_index]
         let last_one = buffer_index == buffer_range[-1]
@@ -416,7 +426,7 @@ endfunction
 function! vem_tabline#buffers#buffer_item.get_tagnr(index) abort
     if g:vem_tabline_show_number == 'none'
         return ''
-    elseif g:vem_tabline_show_number == 'index'
+    elseif g:vem_tabline_show_number == 'index' || g:vem_tabline_show_number == 'allindex'
         return a:index . g:vem_tabline_number_symbol
     elseif g:vem_tabline_show_number == 'buffnr'
         return self.nr . g:vem_tabline_number_symbol
