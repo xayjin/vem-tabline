@@ -15,6 +15,7 @@ scriptencoding utf-8
 let g:vem_tabline_show = get(g:, 'vem_tabline_show', 1)
 let g:vem_tabline_show_icon = get(g:, 'vem_tabline_show_icon', 1)
 let g:vem_tabline_show_number = get(g:, 'vem_tabline_show_number', 'none')
+let g:vem_tabline_show_small_number = get(g:, 'vem_tabline_show_small_number', '1')
 let g:vem_tabline_number_symbol = get(g:, 'vem_tabline_number_symbol', ':')
 let g:vem_tabline_multiwindow_mode = get(g:, 'vem_tabline_multiwindow_mode', 0)
 let g:vem_tabline_location_symbol = get(g:, 'vem_tabline_location_symbol', '@')
@@ -70,12 +71,12 @@ endfunction
 
 " User function to switch buffers
 function! VemTablineGo(tagnr) abort
-    try
-        let buffnr = g:vem_tabline#buffers#section.tagnr_map[a:tagnr . g:vem_tabline_number_symbol]
-        exec 'buffer' . buffnr
-    catch //
-        echoerr "VemTabline: Buffer " . a:tagnr . " does not exist"
-    endtry
+		try
+        let buffnr = g:vem_tabline#buffers#section.tagnr_map[vem_tabline#buffers#get_tagnr_symbol(a:tagnr)] 
+				exec 'buffer' . buffnr
+		catch //
+				echoerr "VemTabline: Buffer " . a:tagnr . " does not exist"
+		endtry
 endfunction
 
 " Commands

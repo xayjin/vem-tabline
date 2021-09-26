@@ -18,6 +18,19 @@ function! vem_tabline#buffers#Init() abort
     return 1
 endfunction
 
+let s:number_map = {
+      \ '0': '⁰',
+      \ '1': '¹',
+      \ '2': '²',
+      \ '3': '³',
+      \ '4': '⁴',
+      \ '5': '⁵',
+      \ '6': '⁶',
+      \ '7': '⁷',
+      \ '8': '⁸',
+      \ '9': '⁹'
+      \ }
+
 let vem_tabline#buffers#section = {}
 
 " buffer_items is a list of dicts, each having info about one of the buffers
@@ -423,13 +436,27 @@ function! vem_tabline#buffers#buffer_item.get_label() abort
     return ' ' . self.icon . self.tagnr . self.name . self.discriminator . self.flags . ' '
 endfunction
 
+function! vem_tabline#buffers#get_tagnr_symbol(index) abort
+		let retstr=''
+		if(g:vem_tabline_show_small_number==1)
+			let instr = a:index 
+			let slen = strlen(instr)
+
+			for i in range(0,slen-1) 
+					 let retstr = retstr . s:number_map[instr[i]]
+			endfor
+		else
+			let retstr = a:index . g:vem_tabline_number_symbol
+		endif
+		return retstr
+endfunction
 function! vem_tabline#buffers#buffer_item.get_tagnr(index) abort
     if g:vem_tabline_show_number == 'none'
         return ''
     elseif g:vem_tabline_show_number == 'index' || g:vem_tabline_show_number == 'allindex'
-        return a:index . g:vem_tabline_number_symbol
+        return vem_tabline#buffers#get_tagnr_symbol(a:index)
     elseif g:vem_tabline_show_number == 'buffnr'
-        return self.nr . g:vem_tabline_number_symbol
+        return vem_tabline#buffers#get_tagnr_symbol(self.nr)
     else
         let msg = "VemTabline: invalid value for g:vem_tabline_show_number"
         let msg .= " ('" . g:vem_tabline_show_number . "')"
