@@ -274,6 +274,12 @@ function! vem_tabline#buffers#section.set_tagnrs() abort
 					call buffer_item.set_tagnr(index)
 					let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
 			endfor
+			" set tagnr for partial name
+			if self.end_index < len(self.buffer_items) - 1
+					let index += 1
+					call self.buffer_items[self.end_index + 1].set_tagnr(index)
+					let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
+			endif
 		else
 			for buffer_item in self.buffer_items
 					let index += 1
@@ -282,14 +288,6 @@ function! vem_tabline#buffers#section.set_tagnrs() abort
 
 			endfor
 		endif 
-
-    " set tagnr for partial name
-    if self.end_index < len(self.buffer_items) - 1
-        let index += 1
-        call self.buffer_items[self.end_index + 1].set_tagnr(index)
-        let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
-    endif
-
 endfunction
 
 function! vem_tabline#buffers#section.get_tabline() abort
